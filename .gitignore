@@ -1,0 +1,7 @@
+.bloop/
+.metals/
+src/target
+holiday/target
+evolutions/target
+project/
+target/
