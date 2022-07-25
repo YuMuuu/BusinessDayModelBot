@@ -18,9 +18,11 @@ lazy val root = (project in file("."))
     "org.scalikejdbc" %% "scalikejdbc" % "4.0.0",
     "org.scalikejdbc" %% "scalikejdbc-config" % "4.0.0",
     "org.postgresql" % "postgresql" % "42.3.1" % Runtime,
+    "org.scalikejdbc" %% "scalikejdbc-config" % "3.0.0",
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
+    "ch.qos.logback"  %  "logback-classic"   % "1.2.10"
     )
   )
-  // .dependsOn(githubRepo)
 
 lazy val evolutions = (project in file("evolutions"))
   .settings(
