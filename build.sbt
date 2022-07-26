@@ -12,7 +12,7 @@ lazy val root = (project in file("."))
     name := "BusinessDayModelBot",
 
     resolvers += "jitpack" at "https://jitpack.io",
-    libraryDependencies += "com.github.Yumuuu" % "BusinessDayModel" % "0.1.0",
+    libraryDependencies += "com.github.Yumuuu" % "BusinessDayModel" % "0.2.0",
 
     libraryDependencies ++= Seq(
     "org.scalikejdbc" %% "scalikejdbc" % "4.0.0",

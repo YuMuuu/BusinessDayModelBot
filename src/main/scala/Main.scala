@@ -192,7 +192,7 @@ object Main extends App with LazyLogging {
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == Hat && cal == JPOrEn && maybeBinOp == None =>
+          ) if castOp == Hat && cal == JPOrEN && maybeBinOp == None =>
         hjpOrEn(c)
       //  hjp|en +
       case BusinessDayCalendar(
@@ -201,7 +201,7 @@ object Main extends App with LazyLogging {
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == Hat && cal == JPOrEn && maybeBinOp == Some(Plus) =>
+          ) if castOp == Hat && cal == JPOrEN && maybeBinOp == Some(Plus) =>
         hjpOrEnPlus(c, maybeInt.get)
       //  hjp|en -
       case BusinessDayCalendar(
@@ -210,7 +210,7 @@ object Main extends App with LazyLogging {
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == Hat && cal == JPOrEn && maybeBinOp == Some(Minus) =>
+          ) if castOp == Hat && cal == JPOrEN && maybeBinOp == Some(Minus) =>
         hjpOrEnMinus(c, maybeInt.get)
       //  ujp
       case BusinessDayCalendar(
@@ -333,7 +333,7 @@ object Main extends App with LazyLogging {
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == UnderBar && cal == JPOrEn && maybeBinOp == None =>
+          ) if castOp == UnderBar && cal == JPOrEN && maybeBinOp == None =>
         ujpOrEn(c)
       //  ujp|en +
       case BusinessDayCalendar(
@@ -343,7 +343,7 @@ object Main extends App with LazyLogging {
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
           )
-          if castOp == UnderBar && cal == JPOrEn && maybeBinOp == Some(Plus) =>
+          if castOp == UnderBar && cal == JPOrEN && maybeBinOp == Some(Plus) =>
         ujpOrEnPlus(c, maybeInt.get)
       //  ujp|en -
       case BusinessDayCalendar(
@@ -353,7 +353,7 @@ object Main extends App with LazyLogging {
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
           )
-          if castOp == UnderBar && cal == JPOrEn && maybeBinOp == Some(Minus) =>
+          if castOp == UnderBar && cal == JPOrEN && maybeBinOp == Some(Minus) =>
         ujpOrEnMinus(c, maybeInt.get)
 
       case c: Calendar => Some(c)
