@@ -545,9 +545,8 @@ object Main extends App with LazyLogging {
       s: DBSession = AutoSession
   ): Option[Calendar] =
     for {
-      c <- hjp(calendar)
       str <-
-        sql"SELECT date FROM jp_businessdate WHERE date <= ${c.localDate} ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM jp_businessdate WHERE date <= (SELECT date FROM jp_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
@@ -577,9 +576,8 @@ object Main extends App with LazyLogging {
   //  uen -
   def uenMinus(calendar: Calendar, num: Num): Option[Calendar] =
     for {
-      c <- hen(calendar)
       str <-
-        sql"SELECT date FROM en_businessdate WHERE date <= ${c.localDate} ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
+        sql"""SELECT date FROM en_businessdate WHERE date <= (SELECT date FROM en_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
@@ -620,9 +618,10 @@ object Main extends App with LazyLogging {
   //  ujp&en -
   def ujpAndEnMinus(calendar: Calendar, num: Num): Option[Calendar] =
     for {
-      c <- hjpAndEn(calendar)
       str <-
-        sql"SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date <= ${c.localDate} ORDER BY jp_businessdate.date DESC OFFSET ${num.int} LIMIT 1;"
+        sql"""SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  
+        WHERE jp_businessdate.date <= (SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1) 
+        ORDER BY jp_businessdate.date DESC OFFSET ${num.int} LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
@@ -653,9 +652,10 @@ object Main extends App with LazyLogging {
   //  ujp|en -
   def ujpOrEnMinus(calendar: Calendar, num: Num): Option[Calendar] =
     for {
-      c <- hjpOrEn(calendar)
       str <-
-        sql"(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate)  WHERE jp_businessdate.date <= ${c.localDate} ORDER BY jp_businessdate.date DESC OFFSET ${num.int} LIMIT 1;"
+        sql"""(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate)  
+        WHERE jp_businessdate.date <= (SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1) 
+        ORDER BY jp_businessdate.date DESC OFFSET ${num.int} LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
