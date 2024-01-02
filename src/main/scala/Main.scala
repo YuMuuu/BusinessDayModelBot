@@ -37,7 +37,7 @@ object Main extends App with LazyLogging {
 
   val result: Option[Expr] = token.toOption.flatMap(lexer)
   val afterResult = result match {
-    case c: Option[Calendar] => c.map(_.localDate)
+    case c: Option[Time] => c.map(_.localDate)
     case _                   => None
   }
   logger.info("result: " + afterResult)
@@ -48,7 +48,7 @@ object Main extends App with LazyLogging {
 
     expr match {
       case bb @ BusinessDayCalendar(
-            b: BusinessDayCalendar,
+            b: BusinessDayTime,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -61,7 +61,7 @@ object Main extends App with LazyLogging {
         } yield cc
       }
       case bc @ BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -71,7 +71,7 @@ object Main extends App with LazyLogging {
     }
   }
 
-  def run(bc: Expr): Option[Calendar] = {
+  def run(bc: Expr): Option[Time] = {
     logger.debug("run arg: " + bc)
     //  && maybeInt == Some(Num)
     // 上記のif 式でのfilterがうまくいかない？ maybeBinOpでパターンは網羅できるので暫定対応で消す
@@ -79,7 +79,7 @@ object Main extends App with LazyLogging {
     bc match {
       //  hjp
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -88,7 +88,7 @@ object Main extends App with LazyLogging {
         hjp(c)
       //  hjp +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -97,7 +97,7 @@ object Main extends App with LazyLogging {
         hjpPlus(c, maybeInt.get)
       //  hjp -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -106,7 +106,7 @@ object Main extends App with LazyLogging {
         hjpMinus(c, maybeInt.get)
       //  hen
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -115,7 +115,7 @@ object Main extends App with LazyLogging {
         hen(c)
       //  hen +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -124,7 +124,7 @@ object Main extends App with LazyLogging {
         henPlus(c, maybeInt.get)
       //  hen -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -133,34 +133,34 @@ object Main extends App with LazyLogging {
         henMinus(c, maybeInt.get)
       //  hc
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == Hat && cal == Center && maybeBinOp == None =>
+          ) if castOp == Hat && cal == Calendar && maybeBinOp == None =>
         hc(c)
       //  hc +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == Hat && cal == Center && maybeBinOp == Some(Plus) =>
+          ) if castOp == Hat && cal == Calendar && maybeBinOp == Some(Plus) =>
         hcenterPlus(c, maybeInt.get)
       //  hc -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == Hat && cal == Center && maybeBinOp == Some(Minus) =>
+          ) if castOp == Hat && cal == Calendar && maybeBinOp == Some(Minus) =>
         hcenterMinus(c, maybeInt.get)
       //  hjp&en
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -169,7 +169,7 @@ object Main extends App with LazyLogging {
         hjpAndEn(c)
       //  hjp&en +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -178,7 +178,7 @@ object Main extends App with LazyLogging {
         hjpAndEnPlus(c, maybeInt.get)
       //  hjp&en -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -187,7 +187,7 @@ object Main extends App with LazyLogging {
         hjpAndEnMinus(c, maybeInt.get)
       //  hjp|en
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -196,7 +196,7 @@ object Main extends App with LazyLogging {
         hjpOrEn(c)
       //  hjp|en +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -205,7 +205,7 @@ object Main extends App with LazyLogging {
         hjpOrEnPlus(c, maybeInt.get)
       //  hjp|en -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -214,7 +214,7 @@ object Main extends App with LazyLogging {
         hjpOrEnMinus(c, maybeInt.get)
       //  ujp
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -223,7 +223,7 @@ object Main extends App with LazyLogging {
         ujp(c)
       //  ujp +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -232,7 +232,7 @@ object Main extends App with LazyLogging {
         ujpPlus(c, maybeInt.get)
       //  ujp -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -241,7 +241,7 @@ object Main extends App with LazyLogging {
         ujpMinus(c, maybeInt.get)
       //  uen
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -250,7 +250,7 @@ object Main extends App with LazyLogging {
         uen(c)
       //  uen +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -259,7 +259,7 @@ object Main extends App with LazyLogging {
         uenPlus(c, maybeInt.get)
       //  uen -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -268,36 +268,36 @@ object Main extends App with LazyLogging {
         uenMinus(c, maybeInt.get)
       //  uc
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
-          ) if castOp == UnderBar && cal == Center && maybeBinOp == None =>
+          ) if castOp == UnderBar && cal == Calendar && maybeBinOp == None =>
         uc(c)
       //  uc +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
           )
-          if castOp == UnderBar && cal == Center && maybeBinOp == Some(Plus) =>
+          if castOp == UnderBar && cal == Calendar && maybeBinOp == Some(Plus) =>
         ucenterPlus(c, maybeInt.get)
       //  uc -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
             maybeInt: Option[Num]
           )
-          if castOp == UnderBar && cal == Center && maybeBinOp == Some(Minus) =>
+          if castOp == UnderBar && cal == Calendar && maybeBinOp == Some(Minus) =>
         ucenterMinus(c, maybeInt.get)
       //  ujp&en
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -306,7 +306,7 @@ object Main extends App with LazyLogging {
         ujpAndEn(c)
       //  ujp&en +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -316,7 +316,7 @@ object Main extends App with LazyLogging {
         ujpAndEnPlus(c, maybeInt.get)
       //  ujp&en -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -328,7 +328,7 @@ object Main extends App with LazyLogging {
         ujpAndEnMinus(c, maybeInt.get)
       //  ujp|en
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -337,7 +337,7 @@ object Main extends App with LazyLogging {
         ujpOrEn(c)
       //  ujp|en +
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -347,7 +347,7 @@ object Main extends App with LazyLogging {
         ujpOrEnPlus(c, maybeInt.get)
       //  ujp|en -
       case BusinessDayCalendar(
-            c: Calendar,
+            c: Time,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
@@ -356,7 +356,7 @@ object Main extends App with LazyLogging {
           if castOp == UnderBar && cal == JPOrEN && maybeBinOp == Some(Minus) =>
         ujpOrEnMinus(c, maybeInt.get)
 
-      case c: Calendar => Some(c)
+      case c: Time => Some(c)
       case _           => throw new Exception("match error")
     }
   }
@@ -368,298 +368,298 @@ object Main extends App with LazyLogging {
   }
 
   //  hjp
-  def hjp(calendar: Calendar): Option[Calendar] =
+  def hjp(time: Time): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM jp_businessdate WHERE date <= ${calendar.localDate} ORDER BY date DESC LIMIT 1;"
+        sql"SELECT date FROM jp_businessdate WHERE date <= ${time.localDate} ORDER BY date DESC LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hjp +
-  def hjpPlus(calendar: Calendar, num: Num): Option[Calendar] =
+  def hjpPlus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM jp_businessdate WHERE date >= (SELECT date FROM jp_businessdate WHERE date <= ${calendar.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM jp_businessdate WHERE date >= (SELECT date FROM jp_businessdate WHERE date <= ${time.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hjp -
-  def hjpMinus(calendar: Calendar, num: Num): Option[Calendar] =
+  def hjpMinus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM jp_businessdate WHERE date <= (SELECT date FROM jp_businessdate WHERE date <= ${calendar.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM jp_businessdate WHERE date <= (SELECT date FROM jp_businessdate WHERE date <= ${time.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  hen
-  def hen(calendar: Calendar): Option[Calendar] =
+  def hen(time: Time): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM en_businessdate WHERE date <= ${calendar.localDate} ORDER BY date DESC LIMIT 1;"
+        sql"SELECT date FROM en_businessdate WHERE date <= ${time.localDate} ORDER BY date DESC LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hen +
-  def henPlus(calendar: Calendar, num: Num): Option[Calendar] =
+  def henPlus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM en_businessdate WHERE date >= (SELECT date FROM en_businessdate WHERE date <= ${calendar.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM en_businessdate WHERE date >= (SELECT date FROM en_businessdate WHERE date <= ${time.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hen -
-  def henMinus(calendar: Calendar, num: Num): Option[Calendar] =
+  def henMinus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM en_businessdate WHERE date <= (SELECT date FROM en_businessdate WHERE date <= ${calendar.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM en_businessdate WHERE date <= (SELECT date FROM en_businessdate WHERE date <= ${time.localDate} ORDER BY date DESC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  hc
-  def hc(calendar: Calendar): Option[Calendar] = Some(calendar)
+  def hc(time: Time): Option[Time] = Some(time)
   //  hc +
-  def hcenterPlus(calendar: Calendar, num: Num): Option[Calendar] = Some(
-    Calendar(calendar.localDate.plusDays(num.int))
+  def hcenterPlus(time: Time, num: Num): Option[Time] = Some(
+    Time(time.localDate.plusDays(num.int))
   )
   //  hc -
-  def hcenterMinus(calendar: Calendar, num: Num): Option[Calendar] = Some(
-    Calendar(calendar.localDate.minusDays(num.int))
+  def hcenterMinus(time: Time, num: Num): Option[Time] = Some(
+    Time(time.localDate.minusDays(num.int))
   )
 
   //  hjp&en
-  def hjpAndEn(calendar: Calendar): Option[Calendar] =
+  def hjpAndEn(time: Time): Option[Time] =
     for {
       str <-
-        sql"""SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date <= ${calendar.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1;"""
+        sql"""SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date <= ${time.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hjp&*en +
-  def hjpAndEnPlus(calendar: Calendar, num: Num): Option[Calendar] =
+  def hjpAndEnPlus(time: Time, num: Num): Option[Time] =
     for {
       str <- sql"""
       SELECT date FROM en_businessdate WHERE date >=
-      (SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date <= ${calendar.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
+      (SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date <= ${time.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
       ORDER BY date ASC OFFSET ${num.int} LIMIT 1
       ;"""
         .map(rs => rs.string("date"))
         .single
         .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hjp&*en -
-  def hjpAndEnMinus(calendar: Calendar, num: Num): Option[Calendar] =
+  def hjpAndEnMinus(time: Time, num: Num): Option[Time] =
     for {
       str <- sql"""
       SELECT date FROM en_businessdate WHERE date <=
-      (SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date <= ${calendar.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
+      (SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date <= ${time.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
       ORDER BY date DESC OFFSET ${num.int} LIMIT 1
       ;"""
         .map(rs => rs.string("date"))
         .single
         .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hjp|en
-  def hjpOrEn(calendar: Calendar): Option[Calendar] =
+  def hjpOrEn(time: Time): Option[Time] =
     for {
       str <-
-        sql"""(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date <= ${calendar.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1;"""
+        sql"""(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date <= ${time.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hjp|en +
-  def hjpOrEnPlus(calendar: Calendar, num: Num): Option[Calendar] =
+  def hjpOrEnPlus(time: Time, num: Num): Option[Time] =
     for {
       str <- sql"""
       SELECT date FROM en_businessdate WHERE date >=
-      ((SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date <= ${calendar.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
+      ((SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date <= ${time.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
       ORDER BY date ASC OFFSET ${num.int} LIMIT 1
       ;"""
         .map(rs => rs.string("date"))
         .single
         .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  hjp|en -
-  def hjpOrEnMinus(calendar: Calendar, num: Num): Option[Calendar] = {
+  def hjpOrEnMinus(time: Time, num: Num): Option[Time] = {
     for {
       str <- sql"""
       SELECT date FROM en_businessdate WHERE date <=
-      ((SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date <= ${calendar.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
+      ((SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date <= ${time.localDate} ORDER BY jp_businessdate.date DESC LIMIT 1)
       ORDER BY date DESC OFFSET ${num.int} LIMIT 1
       ;"""
         .map(rs => rs.string("date"))
         .single
         .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   }
 
   //  ujp
   def ujp(
-      calendar: Calendar
-  )(implicit s: DBSession = AutoSession): Option[Calendar] =
+      time: Time
+  )(implicit s: DBSession = AutoSession): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM jp_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC LIMIT 1;"
+        sql"SELECT date FROM jp_businessdate WHERE date >= ${time.localDate} ORDER BY date ASC LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  ujp +
-  def ujpPlus(calendar: Calendar, num: Num)(implicit
+  def ujpPlus(time: Time, num: Num)(implicit
       s: DBSession = AutoSession
-  ): Option[Calendar] =
+  ): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM jp_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM jp_businessdate WHERE date >= ${time.localDate} ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  ujp -
-  def ujpMinus(calendar: Calendar, num: Num)(implicit
+  def ujpMinus(time: Time, num: Num)(implicit
       s: DBSession = AutoSession
-  ): Option[Calendar] =
+  ): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM jp_businessdate WHERE date <= (SELECT date FROM jp_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM jp_businessdate WHERE date <= (SELECT date FROM jp_businessdate WHERE date >= ${time.localDate} ORDER BY date ASC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  uen
-  def uen(calendar: Calendar): Option[Calendar] =
+  def uen(time: Time): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM en_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC LIMIT 1;"
+        sql"SELECT date FROM en_businessdate WHERE date >= ${time.localDate} ORDER BY date ASC LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  uen +
-  def uenPlus(calendar: Calendar, num: Num): Option[Calendar] =
+  def uenPlus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"SELECT date FROM en_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT date FROM en_businessdate WHERE date >= ${time.localDate} ORDER BY date ASC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  uen -
-  def uenMinus(calendar: Calendar, num: Num): Option[Calendar] =
+  def uenMinus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"""SELECT date FROM en_businessdate WHERE date <= (SELECT date FROM en_businessdate WHERE date >= ${calendar.localDate} ORDER BY date ASC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"""
+        sql"""SELECT date FROM en_businessdate WHERE date <= (SELECT date FROM en_businessdate WHERE date >= ${time.localDate} ORDER BY date ASC LIMIT 1) ORDER BY date DESC OFFSET ${num.int} LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  uc
-  def uc(calendar: Calendar): Option[Calendar] = Some(calendar)
+  def uc(time: Time): Option[Time] = Some(time)
   //  uc +
-  def ucenterPlus(calendar: Calendar, num: Num): Option[Calendar] = Some(
-    Calendar(calendar.localDate.plusDays(num.int))
+  def ucenterPlus(time: Time, num: Num): Option[Time] = Some(
+    Time(time.localDate.plusDays(num.int))
   )
   //  uc -
-  def ucenterMinus(calendar: Calendar, num: Num): Option[Calendar] = Some(
-    Calendar(calendar.localDate.minusDays(num.int))
+  def ucenterMinus(time: Time, num: Num): Option[Time] = Some(
+    Time(time.localDate.minusDays(num.int))
   )
 
   //  ujp&en
-  def ujpAndEn(calendar: Calendar): Option[Calendar] =
+  def ujpAndEn(time: Time): Option[Time] =
     for {
       str <-
-        sql"SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1;"
+        sql"SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date >= ${time.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  ujp&en +
-  def ujpAndEnPlus(calendar: Calendar, num: Num): Option[Calendar] =
+  def ujpAndEnPlus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC OFFSET ${num.int} LIMIT 1;"
+        sql"SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date >= ${time.localDate} ORDER BY jp_businessdate.date ASC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  ujp&en -
-  def ujpAndEnMinus(calendar: Calendar, num: Num): Option[Calendar] =
+  def ujpAndEnMinus(time: Time, num: Num): Option[Time] =
     for {
       str <-
         sql"""SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  
-        WHERE jp_businessdate.date <= (SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1) 
+        WHERE jp_businessdate.date <= (SELECT * FROM jp_businessdate INNER JOIN en_businessdate ON jp_businessdate.date = en_businessdate.date  WHERE jp_businessdate.date >= ${time.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1)
         ORDER BY jp_businessdate.date DESC OFFSET ${num.int} LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  ujp|en
-  def ujpOrEn(calendar: Calendar): Option[Calendar] =
+  def ujpOrEn(time: Time): Option[Time] =
     for {
       str <-
-        sql"(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1;"
+        sql"(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date >= ${time.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
   //  ujp|en +
-  def ujpOrEnPlus(calendar: Calendar, num: Num): Option[Calendar] =
+  def ujpOrEnPlus(time: Time, num: Num): Option[Time] =
     for {
       str <-
-        sql"(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC OFFSET ${num.int} LIMIT 1;"
+        sql"(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date >= ${time.localDate} ORDER BY jp_businessdate.date ASC OFFSET ${num.int} LIMIT 1;"
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
   //  ujp|en -
-  def ujpOrEnMinus(calendar: Calendar, num: Num): Option[Calendar] =
+  def ujpOrEnMinus(time: Time, num: Num): Option[Time] =
     for {
       str <-
         sql"""(SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate)  
-        WHERE jp_businessdate.date <= (SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date >= ${calendar.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1) 
+        WHERE jp_businessdate.date <= (SELECT * FROM jp_businessdate) UNION (SELECT * FROM en_businessdate) WHERE jp_businessdate.date >= ${time.localDate} ORDER BY jp_businessdate.date ASC LIMIT 1)
         ORDER BY jp_businessdate.date DESC OFFSET ${num.int} LIMIT 1;"""
           .map(rs => rs.string("date"))
           .single
           .apply()
       localDate <- toLocalDate(str)
-    } yield Calendar(localDate)
+    } yield Time(localDate)
 
 }

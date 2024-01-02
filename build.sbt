@@ -1,18 +1,18 @@
-import Dependencies._
+//import Dependencies._
 
 ThisBuild / scalaVersion     := "2.13.8"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "com.example"
 ThisBuild / organizationName := "example"
 
-// lazy val githubRepo = RootProject(uri("git://github.com/YuMuuu/BusinessDayModel.git#master"))
+// lazy val githubRepo = RootProject(uri("git://github.com/YuMuuu/BusinessDayModel.git#0.2.0"))
 
 lazy val root = (project in file("."))
   .settings(
     name := "BusinessDayModelBot",
 
     resolvers += "jitpack" at "https://jitpack.io",
-    libraryDependencies += "com.github.Yumuuu" % "BusinessDayModel" % "0.2.0",
+    libraryDependencies += "com.github.YuMuuu" % "BusinessDayModel" % "0.3.0",
 
     libraryDependencies ++= Seq(
     "org.scalikejdbc" %% "scalikejdbc" % "4.0.0",
