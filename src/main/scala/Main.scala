@@ -48,7 +48,7 @@ object Main extends App with LazyLogging {
 
     expr match {
       case bb @ BusinessDayCalendar(
-            b: BusinessDayTime,
+            b: BusinessDayCalendar,
             castOp: CastOp,
             cal: Cal,
             maybeBinOp: Option[BinOp],
